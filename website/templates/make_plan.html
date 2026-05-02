@@ -4,4 +4,139 @@
 
 {% block content %}
     <h2>Create Your Run Plan</h2>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Session Planning</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Design a new running session by setting cycle details and performance goals.</p>
+
+                    <form id="session-form" method="POST">
+                        <div class="form-group mb-4">
+                            <label for="session_name" class="font-weight-bold">Session Name</label>
+                            <input type="text" id="session_name" name="session_name" class="form-control" required value="{{ session['name'] if session else 'Demo Session' }}">
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <strong>Cycle settings</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="cycle_rate">Cycle rate (%)</label>
+                                        <input type="number" step="0.01" id="cycle_rate" name="cycle_rate" class="form-control" required value="{{ session['cycle']['rate'] if session else 50 }}">
+                                        <small class="form-text text-muted">Percentage of run time over walk time.</small>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="cycle_duration">Cycle duration (min)</label>
+                                        <input type="number" step="0.01" id="cycle_duration" name="cycle_duration" class="form-control" required value="{{ session['cycle']['duration'] if session else 10 }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="number_of_cycles">Number of cycles</label>
+                                    <input type="number" step="0.01" id="number_of_cycles" name="number_of_cycles" class="form-control" required value="{{ session['cycle']['number'] if session else 5 }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <strong>Performance goals</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="run_speed_target">Run speed target (km/h)</label>
+                                        <input type="number" step="0.01" id="run_speed_target" name="run_speed_target" class="form-control" value="{{ session['performance_goals']['run_speed_target'] if session else '' }}">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="walk_speed_target">Walk speed target (km/h)</label>
+                                        <input type="number" step="0.01" id="walk_speed_target" name="walk_speed_target" class="form-control" value="{{ session['performance_goals']['walk_speed_target'] if session else '' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="distance_target">Distance target (km)</label>
+                                    <input type="number" step="0.01" id="distance_target" name="distance_target" class="form-control" value="{{ session['performance_goals']['distance_target'] if session else '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-block">Simulate</button>
+                    </form>
+
+                    {% if error %}
+                        <div class="alert alert-danger mt-3">{{ error }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="mb-0">Session Summary</h3>
+                </div>
+                <div class="card-body">
+                    {% if session %}
+                        <h5 class="mb-3">{{ session['name'] }}</h5>
+                        <div class="row mb-3">
+                            <div class="col-sm-6 mb-3">
+                                <div class="bg-light p-3 rounded h-100">
+                                    <h6 class="mb-2">Cycle overview</h6>
+                                    <p class="mb-1"><strong>Rate:</strong> {{ session['cycle']['rate'] }}%</p>
+                                    <p class="mb-1"><strong>Duration:</strong> {{ session['cycle']['duration'] }} min</p>
+                                    <p class="mb-0"><strong>Cycles:</strong> {{ session['cycle']['number'] }}</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <div class="bg-light p-3 rounded h-100">
+                                    <h6 class="mb-2">Session totals</h6>
+                                    <p class="mb-1"><strong>Run time:</strong> {{ session['performance_goals']['total_run_time'] }} min</p>
+                                    <p class="mb-1"><strong>Walk time:</strong> {{ session['performance_goals']['total_walk_time'] }} min</p>
+                                    <p class="mb-0"><strong>Total:</strong> {{ session['performance_goals']['total_session_time'] }} min</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6 mb-3">
+                                <div class="bg-light p-3 rounded h-100">
+                                    <h6 class="mb-2">Speed targets</h6>
+                                    <p class="mb-1"><strong>Run:</strong> {{ session['performance_goals']['run_speed_target'] }} km/h</p>
+                                    <p class="mb-0"><strong>Walk:</strong> {{ session['performance_goals']['walk_speed_target'] }} km/h</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <div class="bg-light p-3 rounded h-100">
+                                    <h6 class="mb-2">Distance & pace</h6>
+                                    <p class="mb-1"><strong>Avg speed:</strong> {{ session['performance_goals']['average_speed_target'] }} km/h</p>
+                                    <p class="mb-1"><strong>Pace:</strong> {{ session['performance_goals']['pace_target'] }} min/km</p>
+                                    <p class="mb-0"><strong>Distance:</strong> {{ session['performance_goals']['distance_target'] }} km</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form id="add-to-plan-form" method="POST">
+                            <button type="submit" class="btn btn-primary btn-block">Add to Plan</button>
+                        </form>
+                    {% else %}
+                        <p class="text-muted mb-0">No session created yet. Use the planner form on the left to simulate a session.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Global plan</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-0">Your overall run plan will be displayed here once sessions are added.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
