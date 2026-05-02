@@ -7,7 +7,7 @@ name = "website"
 version = "0.1.0"
 description = "Run Planner web application"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "blinker==1.9.0",
     "click==8.3.3",
@@ -17,6 +17,7 @@ dependencies = [
     "Jinja2==3.1.6",
     "MarkupSafe==3.0.3",
     "Werkzeug==3.1.8",
+    "pytest==9.0.3"
 ]
 
 [tool.setuptools]
