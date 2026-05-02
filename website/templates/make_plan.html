@@ -4,4 +4,53 @@
 
 {% block content %}
     <h2>Create Your Run Plan</h2>
+    <div class="container">
+        <h3>Session Planning</h3>
+        <div>
+            <p>You can design a new run session here.</p>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="session_name" class="form-label">Session Name:</label>
+                        <input type="text" id="session_name" name="session_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cycle_rate" class="form-label">Cycle rate (percentage of run time over walk time):</label>
+                        <input type="number" step="0.01" id="cycle_rate" name="cycle_rate" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cycle_duration" class="form-label">Cycle duration (minutes):</label>
+                        <input type="number" step="0.01" id="cycle_duration" name="cycle_duration" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="number_of_cycles" class="form-label">Number of cycles:</label>
+                        <input type="number" step="0.01" id="number_of_cycles" name="number_of_cycles" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simulate</button>
+                </form>
+                {% if error %}
+                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                {% endif %}
+                {% if session %}
+                    <div class="card mt-4 p-3">
+                        <h3>{{ session['name'] }}</h3>
+                        <p>Cycle rate: {{ session['cycle_rate'] }}%</p>
+                        <p>Cycle duration: {{ session['cycle_duration'] }} minutes</p>
+                        <p>Number of cycles: {{ session['number_of_cycles'] }}</p>
+                        <p>Total run time: {{ session['total_run_time'] }} minutes</p>
+                        <p>Total walk time: {{ session['total_walk_time'] }} minutes</p>
+                        <p>Total session time: {{ session['total_session_time'] }} minutes</p>
+                    </div>
+                {% endif %}
+                <form method="POST">
+                    <button type="submit" class="btn btn-primary">Add to Plan</button>
+                </form>
+        </div>
+    </div>
+    <div class="container">
+        <h3>Global plan</h3>
+        <div>
+            <p>Your overall run plan will be displayed here.</p>
+        </div>
+    </div>
+
 {% endblock %}
