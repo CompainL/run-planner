@@ -1,6 +1,7 @@
 # run-planner
 My personnal project to create running plans adapted to my needs and style. 
 
+It also serves me as a training tool in implementing CI, using the Flask framework and using AI assistants for coding
 
 ## How to run (the tool)
 1. Create and activate a local environment
