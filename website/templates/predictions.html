@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Predictions - Run Planner{% endblock %}
+
+{% block content %}
+<!-- Predictions Page -->
+ <!-- This is a flask template that extends the base template -->
+  <!-- It inherits a bootstrap layout from the base template -->
+    <h2 class="card-title">Run Predictions</h2>
+    <p>Get insights into your running performance and plan your future runs effectively.</p>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="distance" class="form-label">Distance (km):</label>
+            <input type="number" step="0.01" id="distance" name="distance" class="form-control" value="{{ distance }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="time" class="form-label">Time (minutes):</label>
+            <input type="number" step="0.01" id="time" name="time" class="form-control" value="{{ time }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="next_goal" class="form-label">Next Goal (km):</label>
+            <input type="number" step="0.01" id="next_goal" name="next_goal" class="form-control" value="{{ next_goal }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+    {% if error %}
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+
+    {% if predictions %}
+        <div class="card mt-4 p-3">
+            <h3>Riegel Prediction</h3>
+            <p>Expected time: {{ "%.2f"|format(predictions['Riegel'] / 60) }} minutes</p>
+        </div>
+        <div class="card mt-3 p-3">
+            <h3>Cameron Prediction</h3>
+            <p>Expected time: {{ "%.2f"|format(predictions['Cameron'] / 60) }} minutes</p>
+        </div>
+    {% endif %}
+{% endblock %}
