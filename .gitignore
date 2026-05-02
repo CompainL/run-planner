@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.cpython-313*
+.pyc
 # Virtual environments
 .env/
 
