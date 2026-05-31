@@ -15,12 +15,12 @@ def test_home_page_renders():
     assert b'Your one-stop solution for planning your runs efficiently.' in response.data
 
 
-def test_make_plan_page_renders():
+def test_make_session_page_renders():
     app = create_app()
     app.testing = True
 
     with app.test_client() as client:
-        response = client.get('/make_plan')
+        response = client.get('/make_session')
 
     assert response.status_code == 200
     assert b'Create Your Run Plan' in response.data
@@ -88,13 +88,13 @@ def test_predictions_post_blank_next_goal_uses_distance():
     assert b'Cameron Prediction' in response.data
 
 
-def test_make_plan_post_valid_input_shows_session_summary():
+def test_make_session_post_valid_input_shows_session_summary():
     app = create_app()
     app.testing = True
 
     with app.test_client() as client:
         response = client.post(
-            '/make_plan',
+            '/make_session',
             data={
                 'session_name': 'Morning Run',
                 'cycle_rate': '60',
@@ -114,7 +114,7 @@ def test_make_plan_post_valid_input_shows_session_summary():
     assert b'Walk time:' in response.data
 
 
-def test_make_plan_post_save_session_creates_json_file(tmp_path, monkeypatch):
+def test_make_session_post_save_session_creates_json_file(tmp_path, monkeypatch):
     monkeypatch.setattr(views_module, '_get_session_dir', lambda: tmp_path)
 
     app = create_app()
@@ -122,7 +122,7 @@ def test_make_plan_post_save_session_creates_json_file(tmp_path, monkeypatch):
 
     with app.test_client() as client:
         response = client.post(
-            '/make_plan',
+            '/make_session',
             data={
                 'session_name': 'Saved Run',
                 'cycle_rate': '70',

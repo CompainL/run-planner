@@ -67,8 +67,8 @@ def _save_session_json(session_obj: Session) -> str:
     return filename
 
 
-@views.route('/make_plan', methods=['GET', 'POST'])
-def make_plan():
+@views.route('/make_session', methods=['GET', 'POST'])
+def make_session():
     session = None
     error = None
     saved = False
@@ -106,7 +106,7 @@ def make_plan():
             error = "Please enter valid positive numbers for all fields."
 
     return render_template(
-        "make_plan.html",
+        "add_session.html",
         session=session,
         error=error,
         saved=saved,
