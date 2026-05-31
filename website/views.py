@@ -1,3 +1,8 @@
+import json
+import re
+from datetime import datetime
+from pathlib import Path
+
 from flask import Blueprint, render_template, request
 from website.engine.predictions import both_predictions
 from website.engine.session_planner import Session
@@ -42,14 +47,37 @@ def predictions():
         error=error
     )
 
+def _get_session_dir():
+    session_dir = Path(__file__).resolve().parent / 'data' / 'sessions'
+    session_dir.mkdir(parents=True, exist_ok=True)
+    return session_dir
+
+
+def _sanitize_filename(session_name: str) -> str:
+    safe_name = re.sub(r'[^A-Za-z0-9_-]+', '_', (session_name or 'session').strip())
+    return safe_name.strip('_') or 'session'
+
+
+def _save_session_json(session_obj: Session) -> str:
+    session_dir = _get_session_dir()
+    filename = f"{_sanitize_filename(session_obj.name)}_{datetime.now().strftime('%Y%m%d%H%M%S')}.json"
+    file_path = session_dir / filename
+    with file_path.open('w', encoding='utf-8') as file:
+        json.dump(session_obj.to_dict(), file, indent=2)
+    return filename
+
+
 @views.route('/make_plan', methods=['GET', 'POST'])
 def make_plan():
     session = None
     error = None
+    saved = False
+    saved_filename = None
 
     if request.method == 'POST':
         try:
-            session_name = request.form.get('session_name', '')
+            submit_action = request.form.get('submit_action', 'simulate')
+            session_name = request.form.get('session_name', '').strip() or 'Demo Session'
             cycle_rate = float(request.form.get('cycle_rate', 0))
             cycle_duration = float(request.form.get('cycle_duration', 0))
             number_of_cycles = int(request.form.get('number_of_cycles', 0))
@@ -60,8 +88,7 @@ def make_plan():
             if cycle_rate <= 0 or cycle_duration <= 0 or number_of_cycles <= 0:
                 raise ValueError
 
-
-            session = Session(
+            session_obj = Session(
                 cycle_rate=cycle_rate,
                 cycle_duration=cycle_duration,
                 number_of_cycles=number_of_cycles,
@@ -70,11 +97,18 @@ def make_plan():
                 walk_speed_target=float(walk_speed_target) if walk_speed_target else None,
                 distance_target=float(distance_target) if distance_target else None
             )
+            session = session_obj.to_dict()
+
+            if submit_action == 'save':
+                saved_filename = _save_session_json(session_obj)
+                saved = True
         except ValueError:
             error = "Please enter valid positive numbers for all fields."
 
     return render_template(
         "make_plan.html",
         session=session,
-        error=error
+        error=error,
+        saved=saved,
+        saved_filename=saved_filename
     )

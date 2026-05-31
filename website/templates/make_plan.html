@@ -70,6 +70,9 @@
                     {% if error %}
                         <div class="alert alert-danger mt-3">{{ error }}</div>
                     {% endif %}
+                    {% if saved %}
+                        <div class="alert alert-success mt-3">Session saved as {{ saved_filename }}.</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -120,6 +123,14 @@
                         </div>
 
                         <form id="add-to-plan-form" method="POST">
+                            <input type="hidden" name="submit_action" value="save">
+                            <input type="hidden" name="session_name" value="{{ session['name'] }}">
+                            <input type="hidden" name="cycle_rate" value="{{ session['cycle']['rate'] }}">
+                            <input type="hidden" name="cycle_duration" value="{{ session['cycle']['duration'] }}">
+                            <input type="hidden" name="number_of_cycles" value="{{ session['cycle']['number'] }}">
+                            <input type="hidden" name="run_speed_target" value="{{ session['performance_goals']['run_speed_target'] or '' }}">
+                            <input type="hidden" name="walk_speed_target" value="{{ session['performance_goals']['walk_speed_target'] or '' }}">
+                            <input type="hidden" name="distance_target" value="{{ session['performance_goals']['distance_target'] or '' }}">
                             <button type="submit" class="btn btn-primary btn-block">Add to Plan</button>
                         </form>
                     {% else %}

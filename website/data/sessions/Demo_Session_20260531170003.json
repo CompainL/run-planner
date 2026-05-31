@@ -1,0 +1,18 @@
+{
+  "name": "Demo Session",
+  "cycle": {
+    "rate": 50.0,
+    "duration": 10.0,
+    "number": 5
+  },
+  "performance_goals": {
+    "run_speed_target": null,
+    "walk_speed_target": null,
+    "distance_target": null,
+    "total_run_time": 25.0,
+    "total_walk_time": 25.0,
+    "total_session_time": 50.0,
+    "average_speed_target": null,
+    "pace_target": null
+  }
+}
