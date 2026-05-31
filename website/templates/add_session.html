@@ -141,10 +141,31 @@
 
             <div class="card shadow-sm">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">Global plan</h5>
+                    <h5 class="mb-0">Saved sessions</h5>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted mb-0">Your overall run plan will be displayed here once sessions are added.</p>
+                    {% if saved_sessions %}
+                        <div class="list-group">
+                            {% for saved_session in saved_sessions %}
+                                <div class="list-group-item mb-2">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ saved_session.name }}</strong>
+                                            <div class="text-muted small">{{ saved_session.created_at }}</div>
+                                            <div class="text-muted small">{{ saved_session.cycle.number }} cycles</div>
+                                        </div>
+                                        <form method="POST" class="mb-0">
+                                            <input type="hidden" name="submit_action" value="load">
+                                            <input type="hidden" name="filename" value="{{ saved_session.filename }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Load</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No saved sessions yet. Save a session to edit it later.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

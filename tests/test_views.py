@@ -148,3 +148,51 @@ def test_make_session_post_save_session_creates_json_file(tmp_path, monkeypatch)
     assert saved_data['cycle']['duration'] == 10.0
     assert saved_data['cycle']['number'] == 3
     assert saved_data['performance_goals']['run_speed_target'] == 12.0
+
+
+def test_make_session_saved_sessions_show_and_load(tmp_path, monkeypatch):
+    monkeypatch.setattr(views_module, '_get_session_dir', lambda: tmp_path)
+
+    app = create_app()
+    app.testing = True
+
+    with app.test_client() as client:
+        response = client.post(
+            '/make_session',
+            data={
+                'session_name': 'Editable Run',
+                'cycle_rate': '65',
+                'cycle_duration': '12',
+                'number_of_cycles': '4',
+                'run_speed_target': '9',
+                'walk_speed_target': '5',
+                'distance_target': '10',
+                'submit_action': 'save',
+            },
+            follow_redirects=True,
+        )
+
+        assert response.status_code == 200
+        assert b'Session saved as' in response.data
+
+        response = client.get('/make_session')
+        assert response.status_code == 200
+        assert b'Saved sessions' in response.data
+        assert b'Editable Run' in response.data
+
+        saved_files = list(tmp_path.glob('*.json'))
+        assert len(saved_files) == 1
+
+        response = client.post(
+            '/make_session',
+            data={
+                'submit_action': 'load',
+                'filename': saved_files[0].name,
+            },
+            follow_redirects=True,
+        )
+
+    assert response.status_code == 200
+    assert b'Editable Run' in response.data
+    assert b'value="65.0"' in response.data
+    assert b'value="12.0"' in response.data
